@@ -18,7 +18,6 @@ MPI.Barrier(COMM)
 ### load packages and code 
 #
 #
-#
 using Dates
 using LinearAlgebra
 using CSV
