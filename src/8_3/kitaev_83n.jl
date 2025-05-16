@@ -1,8 +1,16 @@
-using QuantumClifford
-using LinearAlgebra
-using Distributions
+include("../Lattices.jl")
+include("../GenerateOperators.jl")
+abstract type AchtDreiN <: Lattice end
 
-
+struct AchtDreiN_lattice <: AchtDreiN
+  size ::Int
+  L_unitcell::Int
+  params::Vector{Any}
+  index::Int64
+  thermalization_steps::Int64
+  iterations::Int64
+  bewteen_measurements::Int64
+end
 
 function xyz2i1(x::Int, y::Int, z::Int, L::Int)
   return 16*(mod1(x, L) -1) + 16*L*(mod1(y, L)-1) + 16*L*L*(mod1(z, L)-1) + 1
@@ -41,59 +49,7 @@ function I_i_j(state, i, j, L)
   return SA + SB - SAB
 end
 
-function genXX(N, i, j)
-  Xarr = falses(N)
-  Zarr = falses(N)
-  Xarr[i] = true
-  Xarr[j] = true
-  return PauliOperator(0x00, Xarr, Zarr)
-end
-
-function genYY(N, i, j)
-  Xarr = falses(N)
-  Zarr = falses(N)
-  Zarr[i] = true
-  Zarr[j] = true
-  Xarr[i] = true
-  Xarr[j] = true
-  return PauliOperator(0x00, Xarr, Zarr)
-end
-
-function genZZ(N, i, j)
-  Xarr = falses(N)
-  Zarr = falses(N)
-  Zarr[i] = true
-  Zarr[j] = true
-  return PauliOperator(0x00, Xarr, Zarr)
-end
-
-function genLoop(N, ps, is)
-  Xarr = falses(N)
-  Zarr = falses(N)
-  for (p, i) in zip(ps, is)
-    if p == "X"
-      Xarr[i] = true
-    elseif p == "Z"
-      Zarr[i] = true
-    elseif p == "Y"
-      Xarr[i] = true
-      Zarr[i] = true
-    else
-      error("Invalid Pauli operator")
-    end
-  end
-  return PauliOperator(0x00, Xarr, Zarr)
-end
-
-
-
-function kitaev_83n(px, py, pz, L, keep_result=true, phases = true)
-  Nuc = L*L*L
-  N = 16*Nuc
-  Nsample = 25
-
-  dist = Categorical([px, py, pz]) #X, Y, Z
-
+function initialize_state(L::Int)
   # initialize operators
   XX = Array{PauliOperator}(undef, L, L, L, 8)
   for xi in 1:L
@@ -350,7 +306,18 @@ function kitaev_83n(px, py, pz, L, keep_result=true, phases = true)
     push!(is, xyzs2i(1, 1, z, 3, L)); push!(ps, "Z")
   end
   loop3 = genLoop(N, ps, is)
+end
 
+
+
+function kitaev_83n(px, py, pz, L, keep_result=true, phases = true)
+  Nuc = L*L*L
+  N = 16*Nuc
+  Nsample = 25
+
+  dist = Categorical([px, py, pz]) #X, Y, Z
+
+  
 
 
 
