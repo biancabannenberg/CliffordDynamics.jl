@@ -124,12 +124,19 @@ function create_lattice_honeycomb(L::Int)::LatticeHoneycomb
 
     # Define subsystem function (placeholder)
     subsystem = (cols; cut = :y) -> begin
-        lcols = 1:1
+        lcols = 1:L
         if typeof(cols) == Int
             lcols = cols+1:L
-        elseif typeof(cols) == UnitRange
+            if lcols == 0
+                return []
+            end
+        elseif typeof(cols) == UnitRange{Int64}
             lcols = cols
+            if lcols == 1:0
+                return []
+            end
         end
+
         if cut == :a1 ##cuts along a1
             return ([unitcell * (j - 1) + unitcell * L * (k - 1) + l for j in lcols for k in 1:L for l in 1:unitcell])
         elseif cut == :a2 ## cuts along a2

@@ -1,5 +1,8 @@
 include("Lattice_10_3a.jl")
-# include("Simulate.jl")
+include("Lattice_Honeycomb.jl")
+include("Simulate2D.jl")
+using Distributions
+using DataFrames
 
 ### Definition of the Entanglement Entropy and Tripartite mutual information###
 # lat = create_lattice_10_3a(4)
@@ -20,10 +23,10 @@ end
 # S_A(st, 2:4, lat, cut = :a1)
 
 function entanglement_arc(state, lattice; cut = :a1)
-    S_arc = Array{Float64}(undef, lattice.L)
+    S_arc = Array{Float64}(undef, lattice.L+1)
 
-    for (i, l) in enumerate(1:lattice.L)
-        S_arc[i] = calc_EE(state, 1:l, lattice, cut = cut )
+    for (i, l) in enumerate(0:lattice.L)
+        S_arc[i] = S_A(state, 1:l, lattice, cut = cut )
     end
 
     return S_arc

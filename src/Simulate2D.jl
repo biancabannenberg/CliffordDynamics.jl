@@ -34,9 +34,9 @@ function initialize(l::AbstractLattice; keep_result=false, phases=false)
     end
 end
 
-lat = create_lattice_10_3a(4)
-# using BenchmarkTools
-st = (initialize(lat))
+# lat = create_lattice_10_3a(4)
+# # using BenchmarkTools
+# st = (initialize(lat))
 
 function simulate(l::AbstractLattice, p; cut=[:y], iterations::Int=25, thermalization_steps=20, keep_result=false, phases=false, arc=false)
     #probability distribution used : p=[p(XX), p(YY), p(ZZ)]
@@ -49,7 +49,8 @@ function simulate(l::AbstractLattice, p; cut=[:y], iterations::Int=25, thermaliz
         names = "arc_" .* String.(cut)  # ergibt ["arc_a1", "arc_a2", ...]
         arc_data = DataFrame([name => Array{Float64}(undef, 4) for name in names])
     end
-    for _ in 1:iterations
+    state = initialize(l)
+    for j in 1:iterations
         #first initialize state
         state = initialize(l)
 
@@ -59,6 +60,7 @@ function simulate(l::AbstractLattice, p; cut=[:y], iterations::Int=25, thermaliz
             for _ in 1:l.N
                 xi = rand(1:l.L)
                 yi = rand(1:l.L)
+                ope = rand(dist)
                 if Int(l.unitcell / 2) == 1
                     if ope == 1 #do X operation
                         project!(state, l.XX[xi, yi], keep_result=keep_result, phases=phases)
@@ -69,7 +71,6 @@ function simulate(l::AbstractLattice, p; cut=[:y], iterations::Int=25, thermaliz
                     end
                 else
                     si = rand(1:Int(l.unitcell / 2))
-                    ope = rand(dist)
                     if ope == 1 #do X operation
                         project!(state, l.XX[xi, yi, si], keep_result=keep_result, phases=phases)
                     elseif ope == 2 #do Y operation
@@ -89,20 +90,28 @@ function simulate(l::AbstractLattice, p; cut=[:y], iterations::Int=25, thermaliz
             end
         end
 
+        if j == iterations
+            if arc
+                return DataFrame(data), arc_data
+            else
+                return DataFrame(data), state
+            end
+        end
+
     end
 
-    if arc
-        return DataFrame(data), arc_data
-    else
-        return DataFrame(data), state
-    end
+    # if arc
+    #     return DataFrame(data), arc_data
+    # else
+    #     return DataFrame(data), state
+    # end
 
 end
 # cut = [:a1, :a2, :a3, :x1, :x2]
 # names = "arc_" .* String.(cut)  # ergibt ["arc_a1", "arc_a2", ...]
 # data = DataFrame([name => Array{Float64}(undef, 4) for name in names])
 
-entanglement_arc(st, lat, cut=:a1)
-a = simulate(lat, [0.2, 0.5, 0.3], cut=[:a1, :a2], iterations=10, thermalization_steps=20, arc=true)
-a[1]
-a[2]."arc_a2"
+# entanglement_arc(st, lat, cut=:a1)
+# a = simulate(lat, [0.2, 0.5, 0.3], cut=[:a1, :a2], iterations=10, thermalization_steps=20, arc=true)
+# a[1]
+# a[2]."arc_a2"
