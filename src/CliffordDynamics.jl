@@ -14,6 +14,6 @@ include("Observables.jl")
 include("Simulate3D.jl")
 
 
-export create_lattice_honeycomb
+export create_lattice_honeycomb, create_lattice_10_3a, initialize2D, simulate2D
 
 end

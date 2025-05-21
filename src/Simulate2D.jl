@@ -4,7 +4,7 @@ using Distributions
 using DataFrames
 
 #initializes state of Length L with complete tableau of stabilizers
-function initialize(l::AbstractLattice; keep_result=false, phases=false)
+function initialize2D(l::AbstractLattice; keep_result=false, phases=false)
     #L length of system
     #N number of qubits
     state = MixedDestabilizer(zero(Stabilizer, l.N))
@@ -38,7 +38,7 @@ end
 # # using BenchmarkTools
 # st = (initialize(lat))
 
-function simulate(l::AbstractLattice, p; cut=[:y], iterations::Int=25, thermalization_steps=20, keep_result=false, phases=false, arc=false)
+function simulate2D(l::AbstractLattice, p; cut=[:y], iterations::Int=25, thermalization_steps=20, keep_result=false, phases=false, arc=false)
     #probability distribution used : p=[p(XX), p(YY), p(ZZ)]
     dist = Distributions.Categorical([p[1], p[2], p[3]])
 
@@ -47,9 +47,11 @@ function simulate(l::AbstractLattice, p; cut=[:y], iterations::Int=25, thermaliz
     data = Dict(vcat(["EE_" .* String.(cut) .=> 0.0]..., ["TMI_" .* String.(cut) .=> 0.0]...))
     if arc
         names = "arc_" .* String.(cut)  # ergibt ["arc_a1", "arc_a2", ...]
-        arc_data = DataFrame([name => Array{Float64}(undef, 4) for name in names])
+        arc_data = DataFrame([name => zeros(Float32, l.L+1) for name in names])
     end
-    state = initialize(l)
+
+
+    state = initialize2D(l)
     for j in 1:iterations
         #first initialize state
         state = initialize(l)
@@ -89,29 +91,12 @@ function simulate(l::AbstractLattice, p; cut=[:y], iterations::Int=25, thermaliz
                 arc_data[!, "arc_"*String(c)] += entanglement_arc(state, l, cut=c) / iterations
             end
         end
-
-        if j == iterations
-            if arc
-                return DataFrame(data), arc_data
-            else
-                return DataFrame(data), state
-            end
-        end
-
     end
 
-    # if arc
-    #     return DataFrame(data), arc_data
-    # else
-    #     return DataFrame(data), state
-    # end
+    if arc
+        return DataFrame(data), arc_data
+    else
+        return DataFrame(data)
+    end
 
 end
-# cut = [:a1, :a2, :a3, :x1, :x2]
-# names = "arc_" .* String.(cut)  # ergibt ["arc_a1", "arc_a2", ...]
-# data = DataFrame([name => Array{Float64}(undef, 4) for name in names])
-
-# entanglement_arc(st, lat, cut=:a1)
-# a = simulate(lat, [0.2, 0.5, 0.3], cut=[:a1, :a2], iterations=10, thermalization_steps=20, arc=true)
-# a[1]
-# a[2]."arc_a2"

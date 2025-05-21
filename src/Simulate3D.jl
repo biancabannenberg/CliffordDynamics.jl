@@ -1,7 +1,7 @@
 # include("Lattice_10_3a.jl")
 
 #initializes state of Length L with complete tableau of stabilizers
-function initialize(l::AbstractLattice; keep_result=false, phases=false)
+function initialize3D(l::AbstractLattice; keep_result=false, phases=false)
     #L length of system
     #N number of qubits
     state = MixedDestabilizer(zero(Stabilizer, l.N))
@@ -36,7 +36,7 @@ end
 # using BenchmarkTools
 # @benchmark (initialize(lat))
 
-function simulate(l::AbstractLattice, p; cut=[:y], iterations::Int=25, thermalization_steps=20, keep_result=false, phases=false)
+function simulate3D(l::AbstractLattice, p; cut=[:y], iterations::Int=25, thermalization_steps=20, keep_result=false, phases=false)
     #probability distribution used : p=[p(XX), p(YY), p(ZZ)]
     dist = Distributions.Categorical([p[1], p[2], p[3]])
 
@@ -46,7 +46,7 @@ function simulate(l::AbstractLattice, p; cut=[:y], iterations::Int=25, thermaliz
 
     for _ in 1:iterations
         #first initialize state
-        state = initialize(l)
+        state = initialize3D(l)
 
         #thermalization steps
         for _ in 1:thermalization_steps

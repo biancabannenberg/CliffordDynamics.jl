@@ -20,10 +20,9 @@ function S_A(state, lcols, lattice; cut=:z)
     return entanglement_entropy(state, lattice.subsystem(lcols, cut=cut), Val(:rref))
 end
 
-# S_A(st, 2:4, lat, cut = :a1)
 
 function entanglement_arc(state, lattice; cut = :a1)
-    S_arc = Array{Float64}(undef, lattice.L+1)
+    S_arc = zeros(Float32, lattice.L+1)
 
     for (i, l) in enumerate(0:lattice.L)
         S_arc[i] = S_A(state, 1:l, lattice, cut = cut )
@@ -50,5 +49,3 @@ function TMI(state, lattice; cut=:z)
     SABC = S_A(state, 1:3L÷4, lattice, cut=cut)
     return SA + SB + SC - SAB - SBC - SAC + SABC
 end
-# TMI(st, lat, cut = :a1)
-create_lattice_honeycomb(16)
