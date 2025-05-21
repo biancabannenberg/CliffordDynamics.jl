@@ -1,4 +1,4 @@
-include("Lattice_10_3a.jl")
+# include("Lattice_10_3a.jl")
 
 #initializes state of Length L with complete tableau of stabilizers
 function initialize(l::AbstractLattice; keep_result=false, phases=false)
@@ -32,9 +32,9 @@ function initialize(l::AbstractLattice; keep_result=false, phases=false)
     end
 end
 
-lat = create_lattice_10_3a(4)
-using BenchmarkTools
-@benchmark (initialize(lat))
+# lat = create_lattice_10_3a(4)
+# using BenchmarkTools
+# @benchmark (initialize(lat))
 
 function simulate(l::AbstractLattice, p; cut=[:y], iterations::Int=25, thermalization_steps=20, keep_result=false, phases=false)
     #probability distribution used : p=[p(XX), p(YY), p(ZZ)]

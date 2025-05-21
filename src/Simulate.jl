@@ -1,4 +1,4 @@
-include("Lattice_10_3a.jl")
+# include("Lattice_10_3a.jl")
 
 #initializes state of Length L with complete tableau of stabilizers
 function initialize(l::AbstractLattice; keep_result=false, phases=false)

@@ -1,8 +1,8 @@
-include("Lattice_10_3a.jl")
-include("Lattice_Honeycomb.jl")
-include("Simulate2D.jl")
-using Distributions
-using DataFrames
+# include("Lattice_10_3a.jl")
+# include("Lattice_Honeycomb.jl")
+# include("Simulate2D.jl")
+# using Distributions
+# using DataFrames
 
 ### Definition of the Entanglement Entropy and Tripartite mutual information###
 # lat = create_lattice_10_3a(4)
@@ -51,3 +51,4 @@ function TMI(state, lattice; cut=:z)
     return SA + SB + SC - SAB - SBC - SAC + SABC
 end
 # TMI(st, lat, cut = :a1)
+create_lattice_honeycomb(16)

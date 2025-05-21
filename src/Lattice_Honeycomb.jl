@@ -36,7 +36,6 @@ end
 #* [2; 1; (0, 1)] YY
 #* [1; 2; (0,-1)] YY
 
-
 function create_lattice_honeycomb(L::Int)::LatticeHoneycomb
     unitcell = 2
     N = L^2 * unitcell
