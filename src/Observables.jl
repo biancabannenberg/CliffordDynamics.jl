@@ -1,8 +1,8 @@
 include("Lattice_10_3a.jl")
-include("Simulate.jl")
+# include("Simulate.jl")
 
 ### Definition of the Entanglement Entropy and Tripartite mutual information###
-lat = create_lattice_10_3a(4)
+# lat = create_lattice_10_3a(4)
 #function that calculates entanglement entropy of subsystem of length l
 #firstly one need to define the subsystem of length l and total systemsize L (ss_10_3_c(l,L))
 #state: MixedDestabilizer
@@ -19,6 +19,17 @@ end
 
 # S_A(st, 2:4, lat, cut = :a1)
 
+function entanglement_arc(state, lattice; cut = :a1)
+    S_arc = Array{Float64}(undef, lattice.L)
+
+    for (i, l) in enumerate(1:lattice.L)
+        S_arc[i] = calc_EE(state, 1:l, lattice, cut = cut )
+    end
+
+    return S_arc
+end
+
+# entanglement_arc(st, lat, cut = :a1)
 #function that imoplements the tripartite mutual information
 #in this definition: system partet in 4 subsystems going from 1:L/4, L/4+1:L/2, L/2+1:3L/4, 3L/4:L
 # then: I= SA + SB + SC - SAB - SAC - SBA + SAB
