@@ -30,7 +30,6 @@ function entanglement_arc(state, lattice; cut = :a1)
 end
 
 # entanglement_arc(st, lat, cut = :a1)
-
 #function that imoplements the tripartite mutual information
 #in this definition: system partet in 4 subsystems going from 1:L/4, L/4+1:L/2, L/2+1:3L/4, 3L/4:L
 # then: I= SA + SB + SC - SAB - SAC - SBA + SAB
